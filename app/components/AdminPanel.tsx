@@ -225,7 +225,10 @@ export function AdminPanel() {
   };
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window !== 'undefined') {
     fetchAllData();
+    }
   }, []);
 
   const fetchAllData = async () => {

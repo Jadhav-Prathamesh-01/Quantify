@@ -34,6 +34,9 @@ export function Navbar() {
   }, [lastScrollY]);
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
     // Get user data from localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {

@@ -49,7 +49,10 @@ export function StoreManagement() {
   };
 
   useEffect(() => {
-    fetchStores();
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      fetchStores();
+    }
   }, []);
 
   // Auto-load reviews when stores are loaded

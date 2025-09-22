@@ -59,6 +59,9 @@ export default function RatePage() {
   });
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
     // Check authentication
     const userData = localStorage.getItem('user');
     const token = localStorage.getItem('token');

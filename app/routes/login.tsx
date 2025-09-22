@@ -27,11 +27,13 @@ export default function Login() {
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
-    // Load the Lottie animation
-    fetch('/animations/login.json')
-      .then(response => response.json())
-      .then(data => setAnimationData(data))
-      .catch(error => console.error('Error loading animation:', error));
+    // Only load animation on client side
+    if (typeof window !== 'undefined') {
+      fetch('/animations/login.json')
+        .then(response => response.json())
+        .then(data => setAnimationData(data))
+        .catch(error => console.error('Error loading animation:', error));
+    }
   }, []);
 
   const validateForm = () => {

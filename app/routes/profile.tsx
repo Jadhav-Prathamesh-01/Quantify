@@ -54,6 +54,9 @@ export default function Profile() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
     // Get user data and token from localStorage
     const userData = localStorage.getItem('user');
     const token = localStorage.getItem('token');
