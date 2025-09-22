@@ -5,12 +5,4 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
-  optimizeDeps: {
-    include: ['gsap', 'gsap/ScrollTrigger']
-  },
-  build: {
-    commonjsOptions: {
-      include: [/gsap/, /node_modules/]
-    }
-  }
 });

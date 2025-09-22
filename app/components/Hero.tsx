@@ -1,8 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -11,45 +7,35 @@ export function Hero() {
   useEffect(() => {
     if (!containerRef.current || !framesRef.current) return;
 
-    const frames = framesRef.current.children;
-    const totalFrames = frames.length;
-
-    // Set initial state - show first frame
-    gsap.set(frames, { opacity: 0 });
-    if (frames[0]) {
-      gsap.set(frames[0], { opacity: 1 });
-    }
-
-    // Create the scroll-triggered animation
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top top",
-      end: "+=150%", // Reduced scroll distance for faster changes
-      pin: true,
-      scrub: 0.5, // Faster, more responsive scrubbing
-      onUpdate: (self) => {
-        const progress = self.progress;
-        const frameIndex = Math.floor(progress * (totalFrames - 1));
-        
-        // Hide all frames
-        gsap.set(frames, { opacity: 0 });
-        
-        // Show current frame
-        if (frames[frameIndex]) {
-          gsap.set(frames[frameIndex], { opacity: 1 });
-        }
+    // Simple scroll-based animation without GSAP for now
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const progress = Math.min(scrollY / (windowHeight * 1.5), 1);
+      
+      const frames = framesRef.current!.children;
+      const totalFrames = frames.length;
+      const frameIndex = Math.floor(progress * (totalFrames - 1));
+      
+      // Hide all frames
+      Array.from(frames).forEach((frame: any) => {
+        frame.style.opacity = '0';
+      });
+      
+      // Show current frame
+      if (frames[frameIndex]) {
+        (frames[frameIndex] as HTMLElement).style.opacity = '1';
       }
-    });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial call
 
     return () => {
-      scrollTrigger.kill();
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  // Refresh ScrollTrigger when component mounts
-  useEffect(() => {
-    ScrollTrigger.refresh();
-  }, []);
 
   return (
     <section ref={containerRef} className="relative w-full h-screen bg-black overflow-hidden">
