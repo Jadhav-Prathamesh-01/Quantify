@@ -4,6 +4,8 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const storeRoutes = require('./routes/stores');
+const reviewRoutes = require('./routes/reviews');
 const pool = require('./config/database');
 
 const app = express();
@@ -11,7 +13,7 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // React dev server
+  origin: ['http://localhost:5173', 'http://localhost:5174'], // React dev server
   credentials: true
 }));
 app.use(express.json());
@@ -20,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/stores', storeRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

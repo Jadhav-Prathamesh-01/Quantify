@@ -140,8 +140,9 @@ export default function Login() {
 
       if (response.ok) {
         if (activeTab === 'login') {
-          // Store user data and redirect to profile
+          // Store user data and token, then redirect to profile
           localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('token', data.token);
           window.location.href = '/profile';
         } else {
           // Handle registration response

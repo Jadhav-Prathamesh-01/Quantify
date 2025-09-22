@@ -110,7 +110,7 @@ const login = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.user.id;
     const user = await User.findById(userId);
     
     if (!user) {
@@ -124,8 +124,85 @@ const getProfile = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    // Validate input
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Current password and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+    }
+
+    // Change password
+    await User.changePassword(userId, currentPassword, newPassword);
+    
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    if (error.message === 'Current password is incorrect') {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+    if (error.message === 'User not found') {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { name, email, phone, address, storeName } = req.body;
+
+    // Validate input
+    if (!name && !email && !phone && !address && storeName === undefined) {
+      return res.status(400).json({ message: 'At least one field must be provided for update' });
+    }
+
+    // Validate email format if provided
+    if (email && !/\S+@\S+\.\S+/.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    // Validate name length if provided
+    if (name && (name.length < 2 || name.length > 60)) {
+      return res.status(400).json({ message: 'Name must be between 2 and 60 characters' });
+    }
+
+    // Update profile
+    const updatedUser = await User.updateProfile(userId, {
+      name,
+      email,
+      phone,
+      address,
+      storeName
+    });
+    
+    res.json({ 
+      message: 'Profile updated successfully',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    if (error.message === 'User not found') {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (error.message === 'No fields to update') {
+      return res.status(400).json({ message: 'No fields to update' });
+    }
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 module.exports = {
   register,
   login,
-  getProfile
+  getProfile,
+  changePassword,
+  updateProfile
 };
