@@ -1,48 +1,68 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Dynamic import for ScrollTrigger to avoid SSR issues
+let ScrollTrigger: any = null;
 
 // Register ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  import('gsap/ScrollTrigger').then((module) => {
+    ScrollTrigger = module.ScrollTrigger;
+    gsap.registerPlugin(ScrollTrigger);
+  });
+}
 
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const framesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current || !framesRef.current) return;
+    if (!containerRef.current || !framesRef.current || typeof window === 'undefined') return;
 
-    const frames = Array.from(framesRef.current.children) as HTMLElement[];
-    const totalFrames = frames.length;
+    // Wait for ScrollTrigger to be loaded
+    const initScrollTrigger = async () => {
+      if (!ScrollTrigger) {
+        const module = await import('gsap/ScrollTrigger');
+        ScrollTrigger = module.ScrollTrigger;
+        gsap.registerPlugin(ScrollTrigger);
+      }
 
-    // Create a timeline for frame animations
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: `+=${window.innerHeight * 0.4}`, // Slightly longer scroll distance for smoother transitions
-        pin: true,
-        scrub: 0.3, // Balanced scrub for smooth but responsive animation
-        onUpdate: (self) => {
-          const progress = self.progress;
-          const frameIndex = Math.floor(progress * (totalFrames - 1));
-          
-          // Hide all frames
-          frames.forEach((frame) => {
-            gsap.set(frame, { opacity: 0 });
-          });
-          
-          // Show current frame
-          if (frames[frameIndex]) {
-            gsap.set(frames[frameIndex], { opacity: 1 });
+      const frames = Array.from(framesRef.current!.children) as HTMLElement[];
+      const totalFrames = frames.length;
+
+      // Create a timeline for frame animations
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: `+=${window.innerHeight * 0.4}`, // Slightly longer scroll distance for smoother transitions
+          pin: true,
+          scrub: 0.3, // Balanced scrub for smooth but responsive animation
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const frameIndex = Math.floor(progress * (totalFrames - 1));
+            
+            // Hide all frames
+            frames.forEach((frame) => {
+              gsap.set(frame, { opacity: 0 });
+            });
+            
+            // Show current frame
+            if (frames[frameIndex]) {
+              gsap.set(frames[frameIndex], { opacity: 1 });
+            }
           }
         }
-      }
-    });
+      });
+    };
+
+    initScrollTrigger();
 
     // Cleanup function
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      if (ScrollTrigger) {
+        ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill());
+      }
     };
   }, []);
 
