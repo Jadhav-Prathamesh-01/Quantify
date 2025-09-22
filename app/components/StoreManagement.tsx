@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AddStore } from './AddStore';
 import { EditStore } from './EditStore';
+import { API_ENDPOINTS } from '../config/api';
 
 interface Store {
   id: number;
@@ -87,7 +88,7 @@ export function StoreManagement() {
         return;
       }
 
-      const response = await fetch('http://localhost:3001/api/stores', {
+      const response = await fetch(API_ENDPOINTS.STORES, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -132,7 +133,7 @@ export function StoreManagement() {
   const fetchStoreReviews = async (storeId: number) => {
     try {
       setLoadingReviews(prev => ({ ...prev, [storeId]: true }));
-      const response = await fetch(`http://localhost:3001/api/reviews/store/${storeId}`);
+      const response = await fetch(API_ENDPOINTS.REVIEWS_BY_STORE(storeId));
       const data = await response.json();
       
       if (response.ok) {
@@ -155,7 +156,7 @@ export function StoreManagement() {
   const handleSaveEdit = async (updatedStore: Store) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/api/stores/${updatedStore.id}`, {
+      const response = await fetch(API_ENDPOINTS.STORE_BY_ID(updatedStore.id), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

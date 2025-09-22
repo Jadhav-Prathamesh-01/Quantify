@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import type { Route } from "./+types/login";
+import { API_ENDPOINTS } from '../config/api';
 
 export function meta() {
   return [
@@ -95,7 +96,7 @@ export default function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -121,7 +122,7 @@ export default function Login() {
     setIsSubmitting(true);
 
     try {
-      const endpoint = activeTab === 'login' ? 'http://localhost:3001/api/login' : 'http://localhost:3001/api/register';
+      const endpoint = activeTab === 'login' ? API_ENDPOINTS.LOGIN : API_ENDPOINTS.REGISTER;
       const payload = {
         ...formData,
         role: userType,

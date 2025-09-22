@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
+import { API_ENDPOINTS } from '../config/api';
 
 interface Store {
   id: number;
@@ -86,7 +87,7 @@ export default function RatePage() {
 
   const fetchStores = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/reviews/stores');
+      const response = await fetch(API_ENDPOINTS.REVIEWS_STORES);
       const data = await response.json();
       if (data.success) {
         setStores(data.stores);
@@ -100,7 +101,7 @@ export default function RatePage() {
   const fetchUserReviews = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3001/api/reviews/my-reviews', {
+      const response = await fetch(API_ENDPOINTS.REVIEWS_MY_REVIEWS, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -186,7 +187,7 @@ export default function RatePage() {
         reviewText: reviewForm.reviewText
       });
 
-      const response = await fetch('http://localhost:3001/api/reviews/submit', {
+      const response = await fetch(API_ENDPOINTS.REVIEWS_SUBMIT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -220,7 +221,7 @@ export default function RatePage() {
   const handleDeleteReview = async (storeId: number) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/api/reviews/${storeId}`, {
+      const response = await fetch(API_ENDPOINTS.REVIEWS_BY_ID(storeId), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

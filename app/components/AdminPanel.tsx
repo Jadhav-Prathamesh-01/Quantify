@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface Store {
   id: number;
@@ -239,7 +240,7 @@ export function AdminPanel() {
 
   const fetchPendingStores = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/admin/pending-stores');
+      const response = await fetch(API_ENDPOINTS.ADMIN_PENDING_STORES);
       if (response.ok) {
         const data = await response.json();
         setPendingStores(data.stores);
@@ -254,7 +255,7 @@ export function AdminPanel() {
 
   const fetchAllUsers = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/admin/all-users');
+      const response = await fetch(API_ENDPOINTS.ADMIN_ALL_USERS);
       if (response.ok) {
         const data = await response.json();
         setAllUsers(data.users);
@@ -269,7 +270,7 @@ export function AdminPanel() {
 
   const fetchAllStores = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/admin/all-stores');
+      const response = await fetch(API_ENDPOINTS.ADMIN_ALL_STORES);
       if (response.ok) {
         const data = await response.json();
         console.log('Fetched stores data:', data);
@@ -286,7 +287,7 @@ export function AdminPanel() {
 
   const fetchAllReviews = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/admin/all-reviews');
+      const response = await fetch(API_ENDPOINTS.ADMIN_ALL_REVIEWS);
       if (response.ok) {
         const data = await response.json();
         setAllReviews(data.reviews);
@@ -301,13 +302,13 @@ export function AdminPanel() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/admin/stats');
+      const response = await fetch(API_ENDPOINTS.ADMIN_STATS);
       if (response.ok) {
         const data = await response.json();
         setStats(data);
       } else {
         // If stats endpoint doesn't exist, calculate from users data
-        const usersResponse = await fetch('http://localhost:3001/api/admin/all-users');
+        const usersResponse = await fetch(API_ENDPOINTS.ADMIN_ALL_USERS);
         if (usersResponse.ok) {
           const usersData = await usersResponse.json();
           const users = usersData.users;
@@ -328,7 +329,7 @@ export function AdminPanel() {
   const addUser = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/admin/add-user', {
+      const response = await fetch(API_ENDPOINTS.ADMIN_ADD_USER, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -354,7 +355,7 @@ export function AdminPanel() {
 
   const approveStore = async (storeId: number) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/approve-store/${storeId}`, {
+      const response = await fetch(API_ENDPOINTS.ADMIN_APPROVE_STORE(storeId), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -376,7 +377,7 @@ export function AdminPanel() {
 
   const rejectStore = async (storeId: number) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/reject-store/${storeId}`, {
+      const response = await fetch(API_ENDPOINTS.ADMIN_REJECT_STORE(storeId), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -399,7 +400,7 @@ export function AdminPanel() {
   const addStore = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/admin/add-store', {
+      const response = await fetch(API_ENDPOINTS.ADMIN_ADD_STORE, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -427,7 +428,7 @@ export function AdminPanel() {
     if (!editingUser) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/update-user/${editingUser.id}`, {
+      const response = await fetch(API_ENDPOINTS.ADMIN_UPDATE_USER(editingUser.id), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -453,7 +454,7 @@ export function AdminPanel() {
     if (!confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/delete-user/${userId}`, {
+      const response = await fetch(API_ENDPOINTS.ADMIN_DELETE_USER(userId), {
         method: 'DELETE'
       });
 
@@ -475,7 +476,7 @@ export function AdminPanel() {
     if (!editingStore) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/update-store/${editingStore.id}`, {
+      const response = await fetch(API_ENDPOINTS.ADMIN_UPDATE_STORE(editingStore.id), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -509,7 +510,7 @@ export function AdminPanel() {
     if (!confirm('Are you sure you want to delete this store?')) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/delete-store/${storeId}`, {
+      const response = await fetch(API_ENDPOINTS.ADMIN_DELETE_STORE(storeId), {
         method: 'DELETE'
       });
 

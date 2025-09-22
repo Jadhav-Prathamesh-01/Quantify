@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface StoreForm {
   storeName: string;
@@ -87,7 +88,7 @@ export function AddStore({ onStoreCreated, onCancel }: AddStoreProps) {
         formData.append('image', form.image);
       }
 
-      const response = await fetch('http://localhost:3001/api/stores', {
+      const response = await fetch(API_ENDPOINTS.STORES, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

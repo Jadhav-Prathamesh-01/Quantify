@@ -109,9 +109,11 @@ export function Navbar() {
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">QR</span>
-                </div>
+                <img 
+                  src="/favicon.png" 
+                  alt="Quantify Rating Logo" 
+                  className="w-8 h-8 rounded-lg"
+                />
                 <span className="ml-2 text-xl font-bold text-gray-900">Quantify Rating</span>
               </Link>
             </div>

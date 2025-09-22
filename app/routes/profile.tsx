@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Route } from "./+types/profile";
+import { API_ENDPOINTS } from '../config/api';
 
 interface User {
   name: string;
@@ -109,7 +110,7 @@ export default function Profile() {
         }
 
         // Send profile update request to backend
-        const response = await fetch('http://localhost:3001/api/profile', {
+        const response = await fetch(API_ENDPOINTS.PROFILE, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -190,7 +191,7 @@ export default function Profile() {
       }
 
       // Send password change request to backend
-      const response = await fetch('http://localhost:3001/api/change-password', {
+      const response = await fetch(API_ENDPOINTS.CHANGE_PASSWORD, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
