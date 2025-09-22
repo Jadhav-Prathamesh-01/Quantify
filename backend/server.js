@@ -13,7 +13,28 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'], // React dev server
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost for development
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    
+    // Allow Vercel domains
+    if (origin.includes('vercel.app') || origin.includes('vercel.com')) {
+      return callback(null, true);
+    }
+    
+    // Allow your specific domain
+    if (origin === 'https://quantify-rating.vercel.app') {
+      return callback(null, true);
+    }
+    
+    // For production, you might want to be more restrictive
+    callback(null, true);
+  },
   credentials: true
 }));
 app.use(express.json());

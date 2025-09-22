@@ -3,6 +3,16 @@ const API_BASE_URL = typeof window !== 'undefined'
   ? (import.meta.env.VITE_API_URL || 'https://quantify-rating.onrender.com')
   : 'https://quantify-rating.onrender.com';
 
+// Debug logging for production
+if (typeof window !== 'undefined') {
+  console.log('API Configuration:', {
+    VITE_API_URL: import.meta.env.VITE_API_URL,
+    API_BASE_URL: API_BASE_URL,
+    NODE_ENV: import.meta.env.NODE_ENV,
+    MODE: import.meta.env.MODE
+  });
+}
+
 export const API_ENDPOINTS = {
   // Auth endpoints
   LOGIN: `${API_BASE_URL}/api/login`,

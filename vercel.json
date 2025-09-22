@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "build/client",
+  "framework": "react-router",
+  "env": {
+    "VITE_API_URL": "https://quantify-rating.onrender.com"
+  }
+}
