@@ -1,4 +1,9 @@
 import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger);
 
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -7,32 +12,37 @@ export function Hero() {
   useEffect(() => {
     if (!containerRef.current || !framesRef.current) return;
 
-    // Simple scroll-based animation without GSAP for now
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const progress = Math.min(scrollY / (windowHeight * 1.5), 1);
-      
-      const frames = framesRef.current!.children;
-      const totalFrames = frames.length;
-      const frameIndex = Math.floor(progress * (totalFrames - 1));
-      
-      // Hide all frames
-      Array.from(frames).forEach((frame: any) => {
-        frame.style.opacity = '0';
-      });
-      
-      // Show current frame
-      if (frames[frameIndex]) {
-        (frames[frameIndex] as HTMLElement).style.opacity = '1';
+    const frames = Array.from(framesRef.current.children) as HTMLElement[];
+    const totalFrames = frames.length;
+
+    // Create a timeline for frame animations
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top top",
+        end: `+=${window.innerHeight * 0.4}`, // Slightly longer scroll distance for smoother transitions
+        pin: true,
+        scrub: 0.3, // Balanced scrub for smooth but responsive animation
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const frameIndex = Math.floor(progress * (totalFrames - 1));
+          
+          // Hide all frames
+          frames.forEach((frame) => {
+            gsap.set(frame, { opacity: 0 });
+          });
+          
+          // Show current frame
+          if (frames[frameIndex]) {
+            gsap.set(frames[frameIndex], { opacity: 1 });
+          }
+        }
       }
-    };
+    });
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial call
-
+    // Cleanup function
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
